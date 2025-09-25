@@ -212,12 +212,14 @@
         }
 
         function commanderPanier() {
-            if(panier.length === 0) { alert("Panier vide"); return; }
-            if(window.Telegram?.WebApp) {
-                panier.forEach(p => {
-                    const data = { ...p, qty: p.qty };
-                    window.Telegram.WebApp.sendData(JSON.stringify(data));
-                });
+            if (panier.length === 0) { 
+                alert("Panier vide"); 
+                return; 
+            }
+            if (window.Telegram?.WebApp) {
+                const panierJSON = JSON.stringify(panier);  // <-- envoie toute la liste
+                console.log("Envoi au bot :", panierJSON);  // debug
+                window.Telegram.WebApp.sendData(panierJSON);
                 alert("Commande envoyée au bot !");
                 panier = [];
                 updatePanierUI();
