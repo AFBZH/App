@@ -26,7 +26,7 @@
         /* Drawer */
         .drawer {
             position: fixed; bottom: -100%; left: 0; right: 0; 
-            background: #f0f0f0; /* totalement opaque */
+            background: #f0f0f0; /* complètement opaque */
             box-shadow: 0 -2px 15px rgba(0,0,0,0.3); 
             transition: bottom 0.3s; 
             padding: 20px; 
@@ -34,6 +34,7 @@
             overflow-y: auto; 
             border-top-left-radius: 20px; 
             border-top-right-radius: 20px;
+            z-index: 1000; /* pour être au-dessus de tout */
         }
         .drawer.open { bottom: 0; }
         #closeDrawer { float: right; cursor: pointer; font-size: 20px; background: none; border: none; }
