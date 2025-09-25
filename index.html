@@ -4,22 +4,51 @@
     <meta charset="UTF-8">
     <title>ACIDFARM BZH</title>
     <style>
-        body { font-family: Arial; text-align: center; margin: 20px; }
+        body { 
+            font-family: Arial; 
+            text-align: center; 
+            margin: 20px; 
+            background: rgba(50, 50, 50, 0.1); /* fond gris clair transparent */
+        }
         h1 { margin-bottom: 30px; }
         .catalogue { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .product { border: 1px solid #ccc; padding: 10px; width: 150px; cursor: pointer; }
-        .product img { width: 100%; height: auto; }
+        .product { 
+            border: 1px solid #ccc; 
+            padding: 10px; 
+            width: 150px; 
+            cursor: pointer; 
+            border-radius: 10px; 
+            background: #fff; 
+            transition: transform 0.2s;
+        }
+        .product:hover { transform: scale(1.05); }
+        .product img { width: 100%; height: auto; border-radius: 10px; }
         /* Drawer */
         .drawer {
-            position: fixed; bottom: -100%; left: 0; right: 0; background: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.3); transition: bottom 0.3s;
-            padding: 20px; max-height: 80%; overflow-y: auto;
+            position: fixed; bottom: -100%; left: 0; right: 0; 
+            background: rgba(240,240,240,0.95); 
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.3); 
+            transition: bottom 0.3s; 
+            padding: 20px; 
+            max-height: 80%; 
+            overflow-y: auto; 
+            border-top-left-radius: 20px; 
+            border-top-right-radius: 20px;
         }
         .drawer.open { bottom: 0; }
         #closeDrawer { float: right; cursor: pointer; font-size: 20px; background: none; border: none; }
-        #drawer img { width: 100%; height: auto; margin-bottom: 10px; }
+        #drawer img { width: 100%; height: auto; margin-bottom: 10px; border-radius: 10px; }
         ul { text-align: left; padding-left: 20px; }
-        button.command { padding: 10px 20px; font-size: 18px; margin-top: 10px; cursor: pointer; }
+        button.command { 
+            padding: 12px 25px; 
+            font-size: 18px; 
+            margin-top: 15px; 
+            cursor: pointer; 
+            background-color: #000; 
+            color: #fff; 
+            border: none; 
+            border-radius: 15px; 
+        }
     </style>
 </head>
 <body>
@@ -34,43 +63,25 @@
         <p id="drawerPrice"></p>
         <p id="drawerDesc"></p>
         <ul id="drawerSpecs"></ul>
-        <button class="command" onclick="alert('Produit réservé !')">Commander</button>
+        <button class="command" onclick="commander(currentProduct)">Commander</button>
     </div>
 
     <script>
+        // Liste des produits
         const produits = [
-            {
-                id: 1,
-                nom: "aaa",
-                prix: "120 €",
-                image: "",
-                description: "michael jordan",
-                specs: ["quantité : 39-45"]
-            },
-            {
-                id: 2,
-                nom: "aaaa",
-                prix: "90 €",
-                image: "",
-                description: "jaaj",
-                specs: ["Quantité : 36-46"]
-            },
-            {
-                id: 3,
-                nom: "Monsieur Dubois",
-                prix: "100 €",
-                image: "",
-                description: "Gare de Saumur",
-                specs: ["Quantité : 37-44"]
-            }
+            { id: 1, nom: "aaa", prix: "120 €", image: "", description: "michael jordan", specs: ["quantité : 39-45"] },
+            { id: 2, nom: "aaaa", prix: "90 €", image: "", description: "jaaj", specs: ["Quantité : 36-46"] },
+            { id: 3, nom: "Monsieur Dubois", prix: "100 €", image: "", description: "Gare de Saumur", specs: ["Quantité : 37-44"] }
         ];
 
         // Générer le catalogue
         const catalogue = document.getElementById('catalogue');
+        let currentProduct = null;
+
         produits.forEach(p => {
             const div = document.createElement('div');
             div.className = 'product';
-            div.innerHTML = `<img src="${p.image}" alt="${p.nom}"><h3>${p.nom}</h3><p>${p.prix}</p>`;
+            div.innerHTML = `<img src="${p.image || 'https://via.placeholder.com/150'}" alt="${p.nom}"><h3>${p.nom}</h3><p>${p.prix}</p>`;
             div.onclick = () => openDrawer(p);
             catalogue.appendChild(div);
         });
@@ -85,7 +96,8 @@
         const closeDrawerBtn = document.getElementById('closeDrawer');
 
         function openDrawer(produit) {
-            drawerImage.src = produit.image;
+            currentProduct = produit;
+            drawerImage.src = produit.image || 'https://via.placeholder.com/300';
             drawerName.textContent = produit.nom;
             drawerPrice.textContent = produit.prix;
             drawerDesc.textContent = produit.description;
@@ -94,6 +106,17 @@
         }
 
         closeDrawerBtn.onclick = () => drawer.classList.remove('open');
+
+        // Fonction pour envoyer la commande au bot Telegram
+        function commander(produit) {
+            if (!produit) return;
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.sendData(JSON.stringify(produit));
+                alert(`Commande de ${produit.nom} envoyée au bot !`);
+            } else {
+                alert("Commande simulée : " + produit.nom);
+            }
+        }
     </script>
 </body>
 </html>
