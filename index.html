@@ -4,13 +4,96 @@
     <meta charset="UTF-8">
     <title>ACIDFARM BZH</title>
     <style>
-        body { font-family: Arial; text-align: center; margin-top: 50px; }
-        button { padding: 10px 20px; font-size: 18px; }
+        body { font-family: Arial; text-align: center; margin: 20px; }
+        h1 { margin-bottom: 30px; }
+        .catalogue { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .product { border: 1px solid #ccc; padding: 10px; width: 150px; cursor: pointer; }
+        .product img { width: 100%; height: auto; }
+        /* Drawer */
+        .drawer {
+            position: fixed; bottom: -100%; left: 0; right: 0; background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3); transition: bottom 0.3s;
+            padding: 20px; max-height: 80%; overflow-y: auto;
+        }
+        .drawer.open { bottom: 0; }
+        #closeDrawer { float: right; cursor: pointer; font-size: 20px; background: none; border: none; }
+        #drawer img { width: 100%; height: auto; margin-bottom: 10px; }
+        ul { text-align: left; padding-left: 20px; }
+        button.command { padding: 10px 20px; font-size: 18px; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
     <h1>🖤ACIDFARM BZH🤍</h1>
-    <p>Passe ta commande dès maintenant !</p>
-    <button onclick="alert('Faisons du sale !')">Commander</button>
+    <div id="catalogue" class="catalogue"></div>
+
+    <!-- Drawer produit -->
+    <div id="drawer" class="drawer">
+        <button id="closeDrawer">✖</button>
+        <img id="drawerImage" src="" alt="Produit">
+        <h2 id="drawerName"></h2>
+        <p id="drawerPrice"></p>
+        <p id="drawerDesc"></p>
+        <ul id="drawerSpecs"></ul>
+        <button class="command" onclick="alert('Produit réservé !')">Commander</button>
+    </div>
+
+    <script>
+        const produits = [
+            {
+                id: 1,
+                nom: "aaa",
+                prix: "120 €",
+                image: "",
+                description: "michael jordan",
+                specs: ["quantité : 39-45"]
+            },
+            {
+                id: 2,
+                nom: "aaaa",
+                prix: "90 €",
+                image: "",
+                description: "jaaj",
+                specs: ["Quantité : 36-46"]
+            },
+            {
+                id: 3,
+                nom: "Monsieur Dubois",
+                prix: "100 €",
+                image: "",
+                description: "Gare de Saumur",
+                specs: ["Quantité : 37-44"]
+            }
+        ];
+
+        // Générer le catalogue
+        const catalogue = document.getElementById('catalogue');
+        produits.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'product';
+            div.innerHTML = `<img src="${p.image}" alt="${p.nom}"><h3>${p.nom}</h3><p>${p.prix}</p>`;
+            div.onclick = () => openDrawer(p);
+            catalogue.appendChild(div);
+        });
+
+        // Drawer
+        const drawer = document.getElementById('drawer');
+        const drawerImage = document.getElementById('drawerImage');
+        const drawerName = document.getElementById('drawerName');
+        const drawerPrice = document.getElementById('drawerPrice');
+        const drawerDesc = document.getElementById('drawerDesc');
+        const drawerSpecs = document.getElementById('drawerSpecs');
+        const closeDrawerBtn = document.getElementById('closeDrawer');
+
+        function openDrawer(produit) {
+            drawerImage.src = produit.image;
+            drawerName.textContent = produit.nom;
+            drawerPrice.textContent = produit.prix;
+            drawerDesc.textContent = produit.description;
+            drawerSpecs.innerHTML = produit.specs.map(s => `<li>${s}</li>`).join('');
+            drawer.classList.add('open');
+        }
+
+        closeDrawerBtn.onclick = () => drawer.classList.remove('open');
+    </script>
 </body>
 </html>
